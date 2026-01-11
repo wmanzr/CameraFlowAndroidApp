@@ -111,6 +111,15 @@ object PermissionHelper {
                 context,
                 Manifest.permission.READ_MEDIA_VIDEO
             ) == PackageManager.PERMISSION_GRANTED
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
             ContextCompat.checkSelfPermission(
                 context,
@@ -177,4 +186,3 @@ fun Fragment.openAppSettings() {
     }
     startActivity(intent)
 }
-
