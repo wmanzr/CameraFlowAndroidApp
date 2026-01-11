@@ -67,10 +67,10 @@ class VideoFragment : CameraFragment() {
     }
     
     override fun onPermissionsGranted() {
-        requestAudioPermission()
+        checkAudioPermission()
     }
 
-    private fun requestAudioPermission() {
+    private fun checkAudioPermission() {
         when {
             PermissionHelper.hasAudioPermission(requireContext()) -> {
                 startCamera()
@@ -143,12 +143,12 @@ class VideoFragment : CameraFragment() {
         camera.cameraControl.enableTorch(isFlashEnabled)
     }
 
+    @androidx.annotation.OptIn(ExperimentalPersistentRecording::class)
     @OptIn(ExperimentalPersistentRecording::class)
     @SuppressLint("MissingPermission")
     private fun startRecording() {
         val videoCapture = videoCapture ?: return
 
-        // Обновляем ориентацию непосредственно перед началом записи
         videoCapture.targetRotation = getDeviceRotation()
 
         val mediaStoreOutputOptions = cameraViewModel.createVideoOutputOptions()

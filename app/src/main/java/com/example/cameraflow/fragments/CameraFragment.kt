@@ -101,7 +101,7 @@ abstract class CameraFragment : Fragment() {
 
         initializeDeviceRotation()
         setupOrientationListener()
-        checkCameraPermission()
+        onPermissionsGranted()
     }
     
     private fun initializeDeviceRotation() {
@@ -144,33 +144,6 @@ abstract class CameraFragment : Fragment() {
             }
         }
         orientationEventListener?.enable()
-    }
-
-    protected val cameraPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            PermissionHelper.handlePermissionResult(
-                fragment = this,
-                permission = Manifest.permission.CAMERA,
-                isGranted = isGranted,
-                permissionTitleRes = R.string.camera_permission_required,
-                onGranted = { onPermissionsGranted() }
-            )
-        }
-
-    protected fun checkCameraPermission() {
-        when {
-            PermissionHelper.hasCameraPermission(requireContext()) -> {
-                onPermissionsGranted()
-            }
-            else -> {
-                PermissionHelper.requestPermission(
-                    fragment = this,
-                    permission = Manifest.permission.CAMERA,
-                    launcher = cameraPermissionLauncher,
-                    rationaleTitleRes = R.string.camera_permission_required
-                )
-            }
-        }
     }
 
     private fun initializeControllers() {

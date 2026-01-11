@@ -1,8 +1,10 @@
 package com.example.cameraflow.fragments
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -14,6 +16,7 @@ import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import com.example.cameraflow.R
 import com.example.cameraflow.databinding.FragmentCameraBinding
+import com.example.cameraflow.utils.PermissionHelper
 
 class PhotoFragment : CameraFragment() {
     private var _binding: FragmentCameraBinding? = null
@@ -35,10 +38,42 @@ class PhotoFragment : CameraFragment() {
     override fun getFocusIndicator(): View = binding.focusIndicator
     override fun getCountdownTimer(): android.widget.TextView = binding.countdownTimer
 
+    protected val cameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            PermissionHelper.handlePermissionResult(
+                fragment = this,
+                permission = Manifest.permission.CAMERA,
+                isGranted = isGranted,
+                permissionTitleRes = R.string.camera_permission_required,
+                onGranted = { onPermissionsGranted() }
+            )
+        }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         updateModeSelectorButtons(isPhotoMode = true)
+    }
+
+    override fun onPermissionsGranted() {
+        requestCameraPermission()
+    }
+
+    private fun requestCameraPermission() {
+        when {
+            PermissionHelper.hasAudioPermission(requireContext()) -> {
+                startCamera()
+            }
+            else -> {
+                PermissionHelper.requestPermission(
+                    fragment = this,
+                    permission = Manifest.permission.CAMERA,
+                    launcher = cameraPermissionLauncher,
+                    rationaleTitleRes = R.string.camera_permission_required
+                )
+            }
+        }
     }
 
     override fun setupModeSpecificButtons() {
@@ -108,7 +143,6 @@ class PhotoFragment : CameraFragment() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        // Обновляем ориентацию непосредственно перед съемкой
         imageCapture.targetRotation = getDeviceRotation()
 
         showSavingProgress(true)

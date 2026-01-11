@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
@@ -24,7 +25,7 @@ object PermissionHelper {
     fun requestPermission(
         fragment: Fragment,
         permission: String,
-        launcher: androidx.activity.result.ActivityResultLauncher<String>,
+        launcher: ActivityResultLauncher<String>,
         rationaleTitleRes: Int
     ) {
         if (fragment.shouldShowRequestPermissionRationale(permission)) {
@@ -62,12 +63,6 @@ object PermissionHelper {
         }
     }
 
-    /**
-     * Обработать результат запроса множественных разрешений
-     * @param permissions Map разрешений и их статусов
-     * @param permissionTitleRes ID строкового ресурса для заголовка диалога
-     * @param onAllGranted действие при предоставлении всех разрешений
-     */
     fun handleMultiplePermissionsResult(
         fragment: Fragment,
         permissions: Map<String, Boolean>,
@@ -80,7 +75,6 @@ object PermissionHelper {
             return
         }
 
-        // Проверяем, есть ли хотя бы одно разрешение, которое было отклонено навсегда
         val deniedForever = permissions.entries.any { (permission, isGranted) ->
             !isGranted && !fragment.shouldShowRequestPermissionRationale(permission)
         }
@@ -93,29 +87,20 @@ object PermissionHelper {
         }
     }
 
-    /**
-     * Проверка разрешения на камеру
-     */
     fun hasCameraPermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
     }
-    
-    /**
-     * Проверка разрешения на аудио
-     */
+
     fun hasAudioPermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
     }
-    
-    /**
-     * Проверка разрешений на хранилище (для чтения медиа)
-     */
+
     fun hasStoragePermission(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
@@ -139,7 +124,6 @@ object PermissionHelper {
         titleRes: Int,
         onConfirm: () -> Unit
     ) {
-        // Определяем сообщение в зависимости от типа разрешения
         val messageRes = when (titleRes) {
             R.string.camera_permission_required -> R.string.camera_permission_rationale
             R.string.audio_permission_required -> R.string.audio_permission_rationale
@@ -170,10 +154,7 @@ object PermissionHelper {
             .setNegativeButton(fragment.getString(R.string.cancel), null)
             .show()
     }
-    
-    /**
-     * Получить массив разрешений для хранилища в зависимости от версии Android
-     */
+
     fun getStoragePermissions(): Array<String> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(
@@ -186,16 +167,10 @@ object PermissionHelper {
     }
 }
 
-/**
- * Проверить, нужно ли показать объяснение перед запросом разрешения
- */
 fun Fragment.shouldShowRationale(permission: String): Boolean {
     return shouldShowRequestPermissionRationale(permission)
 }
 
-/**
- * Открыть настройки приложения для предоставления разрешения
- */
 fun Fragment.openAppSettings() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
         data = Uri.fromParts("package", requireContext().packageName, null)
