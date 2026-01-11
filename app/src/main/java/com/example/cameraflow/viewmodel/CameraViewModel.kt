@@ -3,6 +3,8 @@ package com.example.cameraflow.viewmodel
 import android.app.Application
 import android.content.ContentValues
 import android.graphics.Bitmap
+import androidx.camera.core.ImageCapture
+import androidx.camera.video.MediaStoreOutputOptions
 import androidx.lifecycle.AndroidViewModel
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.AspectRatio
@@ -10,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.LiveData
 import com.example.cameraflow.data.MediaRepository
 import com.example.cameraflow.utils.FormatUtils
+import java.util.concurrent.Executor
 
 class CameraViewModel(application: Application) : AndroidViewModel(application) {
     private val mediaRepository = MediaRepository(application.applicationContext)
@@ -100,5 +103,19 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         val bitmap = freezeFrameBitmap
         freezeFrameBitmap = null // Очищаем после использования
         return bitmap
+    }
+
+    fun savePhoto(
+        imageCapture: ImageCapture,
+        executor: Executor,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        mediaRepository.savePhoto(imageCapture, executor, onSuccess, onError)
+    }
+
+    @androidx.camera.video.ExperimentalPersistentRecording
+    fun createVideoOutputOptions(): MediaStoreOutputOptions {
+        return mediaRepository.createVideoOutputOptions()
     }
 }

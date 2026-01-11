@@ -8,8 +8,15 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.video.MediaStoreOutputOptions
+import androidx.camera.video.Recorder
+import androidx.camera.video.VideoCapture
+import androidx.core.content.ContextCompat
 import com.example.cameraflow.model.MediaModel
 import com.example.cameraflow.utils.FormatUtils
+import java.util.concurrent.Executor
 
 class MediaRepository(private val context: Context) {
 
@@ -176,5 +183,44 @@ class MediaRepository(private val context: Context) {
         } catch (e: Exception) {
             Pair(false, false)
         }
+    }
+
+    fun savePhoto(
+        imageCapture: ImageCapture,
+        executor: Executor,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val contentValues = preparePhoto()
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(
+            context.contentResolver,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        ).build()
+
+        imageCapture.takePicture(
+            outputOptions,
+            executor,
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    onSuccess()
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    onError(exception.message ?: "Unknown error")
+                }
+            }
+        )
+    }
+
+    @androidx.camera.video.ExperimentalPersistentRecording
+    fun createVideoOutputOptions(): MediaStoreOutputOptions {
+        val contentValues = prepareVideo()
+        return MediaStoreOutputOptions.Builder(
+            context.contentResolver,
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        )
+            .setContentValues(contentValues)
+            .build()
     }
 }

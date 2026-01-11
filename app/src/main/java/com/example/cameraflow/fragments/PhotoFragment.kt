@@ -1,12 +1,10 @@
 package com.example.cameraflow.fragments
 
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.camera.core.Camera
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCase
 import androidx.camera.view.PreviewView
@@ -115,36 +113,24 @@ class PhotoFragment : CameraFragment() {
 
         showSavingProgress(true)
 
-        val contentValues = cameraViewModel.preparePhoto()
-
-        val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(
-                requireContext().contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-            .build()
-
         val mainExecutor = ContextCompat.getMainExecutor(requireContext())
-        imageCapture.takePicture(
-            outputOptions,
-            mainExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exception: ImageCaptureException) {
-                    if (isAdded) {
-                        showSavingProgress(false)
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error_photo_save),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+        
+        cameraViewModel.savePhoto(
+            imageCapture = imageCapture,
+            executor = mainExecutor,
+            onSuccess = {
+                if (isAdded) {
+                    showSavingProgress(false)
                 }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    if (isAdded) {
-                        showSavingProgress(false)
-                    }
+            },
+            onError = { _ ->
+                if (isAdded) {
+                    showSavingProgress(false)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_photo_save),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         )

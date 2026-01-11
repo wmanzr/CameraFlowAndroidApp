@@ -3,16 +3,13 @@ package com.example.cameraflow.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.OptIn
 import androidx.camera.core.Camera
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCase
 import androidx.camera.video.ExperimentalPersistentRecording
-import androidx.camera.video.MediaStoreOutputOptions
 import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
 import androidx.camera.video.Recorder
@@ -154,14 +151,7 @@ class VideoFragment : CameraFragment() {
         // Обновляем ориентацию непосредственно перед началом записи
         videoCapture.targetRotation = getDeviceRotation()
 
-        val contentValues = cameraViewModel.prepareVideo()
-
-        val mediaStoreOutputOptions = MediaStoreOutputOptions.Builder(
-            requireContext().contentResolver,
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        )
-            .setContentValues(contentValues)
-            .build()
+        val mediaStoreOutputOptions = cameraViewModel.createVideoOutputOptions()
 
         val pendingRecording = videoCapture.output
             .prepareRecording(requireContext(), mediaStoreOutputOptions)
