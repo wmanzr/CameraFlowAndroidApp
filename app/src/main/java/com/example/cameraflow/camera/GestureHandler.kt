@@ -15,14 +15,16 @@ class GestureHandler(
     private lateinit var scaleGestureDetector: ScaleGestureDetector
 
     fun setupGestures(previewView: PreviewView) {
-        gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        gestureDetector = GestureDetector(context, object :
+            GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(e: MotionEvent): Boolean {
                 handleTapToFocus(e.x, e.y, previewView)
                 return true
             }
         })
 
-        scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        scaleGestureDetector = ScaleGestureDetector(context, object :
+            ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 handleZoom(detector.scaleFactor)
                 return true

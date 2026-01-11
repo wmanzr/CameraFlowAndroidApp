@@ -86,7 +86,6 @@ class CameraController(
                 }
 
                 val captureUseCases = useCasesProvider(currentPreview)
-
                 val allUseCases = listOf(currentPreview) + captureUseCases
 
                 try {

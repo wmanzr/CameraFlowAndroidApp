@@ -205,7 +205,6 @@ class MediaRepository(private val context: Context) {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     onSuccess()
                 }
-
                 override fun onError(exception: ImageCaptureException) {
                     onError(exception.message ?: "Unknown error")
                 }

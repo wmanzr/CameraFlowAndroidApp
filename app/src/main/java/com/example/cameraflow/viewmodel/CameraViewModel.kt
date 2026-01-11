@@ -101,7 +101,7 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
 
     fun getFreezeFrameBitmap(): Bitmap? {
         val bitmap = freezeFrameBitmap
-        freezeFrameBitmap = null // Очищаем после использования
+        freezeFrameBitmap = null
         return bitmap
     }
 

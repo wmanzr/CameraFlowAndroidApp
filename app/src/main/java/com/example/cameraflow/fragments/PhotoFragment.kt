@@ -62,7 +62,7 @@ class PhotoFragment : CameraFragment() {
 
     private fun requestCameraPermission() {
         when {
-            PermissionHelper.hasAudioPermission(requireContext()) -> {
+            PermissionHelper.hasCameraPermission(requireContext()) -> {
                 startCamera()
             }
             else -> {
