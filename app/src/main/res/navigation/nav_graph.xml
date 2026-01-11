@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/photoFragment">
+
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="com.example.cameraflow.fragments.PhotoFragment"
+        android:label="Photo">
+        <action
+            android:id="@+id/action_photoFragment_to_videoFragment"
+            app:destination="@id/videoFragment"
+            app:popUpTo="@id/photoFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_photoFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.example.cameraflow.fragments.VideoFragment"
+        android:label="Video">
+        <action
+            android:id="@+id/action_videoFragment_to_photoFragment"
+            app:destination="@id/photoFragment"
+            app:popUpTo="@id/videoFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_videoFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.example.cameraflow.fragments.GalleryFragment"
+        android:label="Gallery">
+        <action
+            android:id="@+id/action_galleryFragment_to_mediaViewerFragment"
+            app:destination="@id/mediaViewerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mediaViewerFragment"
+        android:name="com.example.cameraflow.fragments.MediaViewerFragment"
+        android:label="Media Viewer">
+        <argument
+            android:name="mediaId"
+            app:argType="long" />
+        <argument
+            android:name="initialPosition"
+            app:argType="integer" />
+    </fragment>
+
+</navigation>
+
+

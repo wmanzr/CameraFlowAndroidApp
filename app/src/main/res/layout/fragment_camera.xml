@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <!-- Предпросмотр камеры -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/topControlsContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:scaleType="fitStart"
+        app:implementationMode="compatible" />
+
+    <!-- Freeze frame для плавного переключения камеры -->
+    <ImageView
+        android:id="@+id/freezeFrame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        android:alpha="0.0"
+        app:layout_constraintTop_toTopOf="@id/preview"
+        app:layout_constraintBottom_toBottomOf="@id/preview"
+        app:layout_constraintStart_toStartOf="@id/preview"
+        app:layout_constraintEnd_toEndOf="@id/preview" />
+
+    <!-- Вспышка экрана (используется в PhotoFragment) -->
+    <View
+        android:id="@+id/flashOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:alpha="0.0"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Индикатор фокусировки -->
+    <View
+        android:id="@+id/focusIndicator"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/focus_indicator"
+        android:visibility="gone"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Обратный отсчет таймера -->
+    <TextView
+        android:id="@+id/countdownTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="120sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:elevation="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Таймер записи (используется в VideoFragment) -->
+    <TextView
+        android:id="@+id/recordingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timer_initial"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/topControlsContainer"
+        app:layout_constraintBottom_toBottomOf="@id/topControlsContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/recordingTimeLandscape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timer_initial"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Верхняя панель (Вспышка и Таймер отсрочки) -->
+    <LinearLayout
+        android:id="@+id/topControlsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/flashButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:icon="@drawable/ic_flash"
+            app:iconGravity="textStart"
+            app:iconTint="#666666"
+            app:iconPadding="0dp"
+            app:cornerRadius="18dp"
+            app:strokeColor="#666666"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@android:color/transparent" />
+
+        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/timerButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:icon="@drawable/timer"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="#666666"
+            app:cornerRadius="18dp"
+            app:strokeColor="#666666"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@android:color/transparent" />
+    </LinearLayout>
+
+    <!-- Переключатели Фото / Видео -->
+    <LinearLayout
+        android:id="@+id/modeSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonsContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/videoModeButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/video"
+            android:textColor="#666666"
+            android:textSize="18sp"
+            android:layout_marginEnd="4dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="12dp"
+            app:strokeColor="#666666"
+            app:strokeWidth="2dp"
+            app:backgroundTint="@android:color/transparent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/photoModeButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/photo"
+            android:textColor="#666666"
+            android:textSize="18sp"
+            android:layout_marginStart="4dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="12dp"
+            app:strokeColor="#666666"
+            app:strokeWidth="2dp"
+            app:backgroundTint="@android:color/transparent" />
+    </LinearLayout>
+
+    <!-- Нижняя панель кнопок -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <FrameLayout
+            android:id="@+id/captureButtonContainer"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/capture_button"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ProgressBar
+                android:id="@+id/savingProgressBar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@android:color/black" />
+
+            <View
+                android:id="@+id/recordingIndicator"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/recording_square"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/galleryButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/small_button_background"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:contentDescription="@string/gallery"
+            android:padding="12dp"
+            android:layout_marginEnd="20dp"
+            app:tint="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@id/captureButtonContainer"
+            app:layout_constraintTop_toTopOf="@id/captureButtonContainer"
+            app:layout_constraintBottom_toBottomOf="@id/captureButtonContainer" />
+
+        <ImageButton
+            android:id="@+id/switchCameraButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/small_button_background"
+            android:src="@drawable/switch_camera"
+            android:contentDescription="@string/switch_camera"
+            android:padding="12dp"
+            android:layout_marginStart="20dp"
+            app:tint="@android:color/white"
+            app:layout_constraintStart_toEndOf="@id/captureButtonContainer"
+            app:layout_constraintTop_toTopOf="@id/captureButtonContainer"
+            app:layout_constraintBottom_toBottomOf="@id/captureButtonContainer" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/aspectRatio43Button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="56dp"
+            android:layout_height="40dp"
+            android:text="@string/aspect_ratio_4_3"
+            android:textColor="@android:color/white"
+            android:layout_marginEnd="20dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:minWidth="0dp"
+            app:cornerRadius="20dp"
+            app:strokeColor="@android:color/white"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@android:color/transparent"
+            app:layout_constraintEnd_toStartOf="@id/galleryButton"
+            app:layout_constraintTop_toTopOf="@id/captureButtonContainer"
+            app:layout_constraintBottom_toBottomOf="@id/captureButtonContainer" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/aspectRatio169Button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="56dp"
+            android:layout_height="40dp"
+            android:text="@string/aspect_ratio_16_9"
+            android:textColor="#666666"
+            android:layout_marginStart="20dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:minWidth="0dp"
+            app:cornerRadius="20dp"
+            app:strokeColor="#666666"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@android:color/transparent"
+            app:layout_constraintStart_toEndOf="@id/switchCameraButton"
+            app:layout_constraintTop_toTopOf="@id/captureButtonContainer"
+            app:layout_constraintBottom_toBottomOf="@id/captureButtonContainer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
