@@ -106,7 +106,7 @@ class MediaRepository(private val context: Context) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
-                val dateAdded = cursor.getLong(dateColumn) * 1000 // Convert to milliseconds
+                val dateAdded = cursor.getLong(dateColumn) * 1000
                 val mimeType = cursor.getString(mimeTypeColumn)
                 val displayName = cursor.getString(displayNameColumn) ?: ""
                 val size = cursor.getLong(sizeColumn)
@@ -166,7 +166,7 @@ class MediaRepository(private val context: Context) {
         return ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
             put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val pathKey = when (mediaType) {
                     MediaType.PHOTO -> MediaStore.Images.Media.RELATIVE_PATH
                     MediaType.VIDEO -> MediaStore.Video.Media.RELATIVE_PATH
