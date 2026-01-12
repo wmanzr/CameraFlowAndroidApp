@@ -18,6 +18,11 @@ import com.example.cameraflow.model.MediaModel
 import com.example.cameraflow.utils.FormatUtils
 import java.util.concurrent.Executor
 
+enum class MediaType {
+    PHOTO,
+    VIDEO
+}
+
 class MediaRepository(private val context: Context) {
 
     fun loadMediaFromStore(isVideo: Boolean): List<MediaModel> {
@@ -151,24 +156,22 @@ class MediaRepository(private val context: Context) {
         return images + videos
     }
 
-    fun preparePhoto(): ContentValues {
-        val fileName = FormatUtils.generateFileName("photo")
-        return ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraFlow")
-            }
+    private fun prepareMediaContentValues(mediaType: MediaType): ContentValues {
+        val (fileNamePrefix, mimeType, relativePath) = when (mediaType) {
+            MediaType.PHOTO -> Triple("photo", "image/jpeg", "Pictures/CameraFlow")
+            MediaType.VIDEO -> Triple("video", "video/mp4", "Movies/CameraFlow")
         }
-    }
 
-    fun prepareVideo(): ContentValues {
-        val fileName = FormatUtils.generateFileName("video")
+        val fileName = FormatUtils.generateFileName(fileNamePrefix)
         return ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-            put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/CameraFlow")
+                val pathKey = when (mediaType) {
+                    MediaType.PHOTO -> MediaStore.Images.Media.RELATIVE_PATH
+                    MediaType.VIDEO -> MediaStore.Video.Media.RELATIVE_PATH
+                }
+                put(pathKey, relativePath)
             }
         }
     }
@@ -191,7 +194,7 @@ class MediaRepository(private val context: Context) {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
-        val contentValues = preparePhoto()
+        val contentValues = prepareMediaContentValues(MediaType.PHOTO)
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             context.contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -214,7 +217,7 @@ class MediaRepository(private val context: Context) {
 
     @androidx.camera.video.ExperimentalPersistentRecording
     fun createVideoOutputOptions(): MediaStoreOutputOptions {
-        val contentValues = prepareVideo()
+        val contentValues = prepareMediaContentValues(MediaType.VIDEO)
         return MediaStoreOutputOptions.Builder(
             context.contentResolver,
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
