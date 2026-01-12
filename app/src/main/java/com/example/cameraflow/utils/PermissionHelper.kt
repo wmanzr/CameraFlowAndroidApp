@@ -107,19 +107,19 @@ object PermissionHelper {
                 context,
                 Manifest.permission.READ_MEDIA_IMAGES
             ) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_MEDIA_VIDEO
-            ) == PackageManager.PERMISSION_GRANTED
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_MEDIA_VIDEO
+                    ) == PackageManager.PERMISSION_GRANTED
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
         } else {
             ContextCompat.checkSelfPermission(
                 context,
@@ -139,7 +139,7 @@ object PermissionHelper {
             R.string.storage_permission_required -> R.string.storage_permission_rationale
             else -> R.string.camera_permission_rationale
         }
-        
+
         AlertDialog.Builder(fragment.requireContext())
             .setTitle(fragment.getString(titleRes))
             .setMessage(fragment.getString(messageRes))
@@ -178,6 +178,9 @@ object PermissionHelper {
         } else {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+    }
+    fun hasCameraFeature(context: Context): Boolean {
+        return context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
     }
 }
 

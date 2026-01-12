@@ -15,13 +15,13 @@ import com.example.cameraflow.R
 import com.example.cameraflow.databinding.FragmentGalleryBinding
 import com.example.cameraflow.utils.applySystemBarsPadding
 import com.example.cameraflow.utils.PermissionHelper
-import com.example.cameraflow.utils.shouldShowRationale
 import com.example.cameraflow.utils.FormatUtils
 import com.example.cameraflow.utils.showDeleteDialog
+import com.example.cameraflow.utils.shouldShowRationale
 import com.example.cameraflow.model.MediaModel
 import com.example.cameraflow.adapters.MediaAdapter
 
-class GalleryFragment : Fragment() {
+ class GalleryFragment : Fragment() {
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding ?: throw RuntimeException("Non-zero value was expected")
     private val galleryViewModel: GalleryViewModel by activityViewModels()

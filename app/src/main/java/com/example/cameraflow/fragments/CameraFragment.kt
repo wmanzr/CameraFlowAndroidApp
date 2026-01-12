@@ -30,8 +30,6 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.doOnLayout
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.Manifest
-import androidx.activity.result.contract.ActivityResultContracts
 import com.example.cameraflow.utils.PermissionHelper
 
 abstract class CameraFragment : Fragment() {
@@ -377,6 +375,15 @@ abstract class CameraFragment : Fragment() {
     }
 
     protected fun startCamera() {
+        if (!PermissionHelper.hasCameraFeature(requireContext())) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.error_camera_start),
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
         val savedBitmap = cameraViewModel.getFreezeFrameBitmap()
         if (savedBitmap != null) {
             indicatorController.showFreezeFrame(savedBitmap)
