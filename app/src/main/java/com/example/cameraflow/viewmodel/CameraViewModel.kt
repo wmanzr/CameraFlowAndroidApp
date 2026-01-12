@@ -87,14 +87,6 @@ class CameraViewModel(application: Application) : AndroidViewModel(application) 
         return _selectedCamera.value == CameraSelector.DEFAULT_FRONT_CAMERA
     }
 
-    fun preparePhoto(): ContentValues {
-        return mediaRepository.preparePhoto()
-    }
-
-    fun prepareVideo(): ContentValues {
-        return mediaRepository.prepareVideo()
-    }
-
     fun setFreezeFrameBitmap(bitmap: Bitmap?) {
         freezeFrameBitmap = bitmap
     }
