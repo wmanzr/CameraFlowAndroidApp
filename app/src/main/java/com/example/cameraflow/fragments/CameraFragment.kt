@@ -244,7 +244,7 @@ abstract class CameraFragment : Fragment() {
     }
 
     private fun toggleFlash() {
-        if (cameraViewModel.isFrontCamera()) {
+        if (cameraViewModel.isFrontCamera() || !cameraController.hasFlashUnit()) {
             return
         }
         cameraViewModel.toggleFlash()
@@ -258,10 +258,11 @@ abstract class CameraFragment : Fragment() {
 
         val flashButton = getFlashButton()
         val isFrontCamera = cameraViewModel.isFrontCamera()
+        val hasFlash = cameraController.hasFlashUnit()
 
-        flashButton.isEnabled = !isFrontCamera
+        flashButton.isEnabled = !isFrontCamera && hasFlash
 
-        if (isEnabled && !isFrontCamera) {
+        if (isEnabled && !isFrontCamera && hasFlash) {
             flashButton.setIconResource(R.drawable.ic_flash)
             flashButton.iconTint = activeColor
             flashButton.strokeColor = activeColor

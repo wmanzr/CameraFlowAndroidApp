@@ -117,9 +117,15 @@ class PhotoFragment : CameraFragment() {
             )
             .build()
 
+        val flashMode = if (cameraController.hasFlashUnit() && isFlashEnabled) {
+            ImageCapture.FLASH_MODE_ON
+        } else {
+            ImageCapture.FLASH_MODE_OFF
+        }
+
         imageCapture = ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-            .setFlashMode(if (isFlashEnabled) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF)
+            .setFlashMode(flashMode)
             .setResolutionSelector(resolutionSelector)
             .setTargetRotation(getDeviceRotation())
             .build()
@@ -132,6 +138,10 @@ class PhotoFragment : CameraFragment() {
 
     private fun updateImageCaptureFlashMode() {
         val imageCapture = imageCapture ?: return
+        if (!cameraController.hasFlashUnit()) {
+            imageCapture.flashMode = ImageCapture.FLASH_MODE_OFF
+            return
+        }
         imageCapture.flashMode = if (isFlashEnabled) {
             ImageCapture.FLASH_MODE_ON
         } else {

@@ -140,6 +140,10 @@ class VideoFragment : CameraFragment() {
 
     private fun updateTorch() {
         val camera = cameraController.getCamera() ?: return
+        if (!cameraController.hasFlashUnit()) {
+            camera.cameraControl.enableTorch(false)
+            return
+        }
         camera.cameraControl.enableTorch(isFlashEnabled)
     }
 

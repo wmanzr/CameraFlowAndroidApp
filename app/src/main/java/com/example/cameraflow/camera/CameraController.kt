@@ -195,6 +195,10 @@ class CameraController(
     
     fun getPreview(): Preview? = preview
 
+    fun hasFlashUnit(): Boolean {
+        return camera?.cameraInfo?.hasFlashUnit() ?: false
+    }
+
     fun shutdown() {
         camera = null
         preview = null
